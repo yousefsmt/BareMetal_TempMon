@@ -23,7 +23,7 @@ int main()
   {
     // GPIOC_ODR_R |= 0x00000000; /* Output data is 1*/
     GPIOC_BSRR_R |= 0x00002000;
-    for (int i = 0; i < 262144; i++){}
+    for (int i = 0; i < 1048576; i++){}
     
     
     // GPIOC_ODR_R |= 0x20000000; /* Output data is 0*/

@@ -43,7 +43,7 @@ Core/Src/syscalls.c
 
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32f103xb.s
+Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xb.s
 
 # ASMM sources
 ASMM_SOURCES = 
