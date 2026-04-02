@@ -1,37 +1,20 @@
-#include "main.h"
+#include "stm32f1xx.h"
 
 int main()
 {
-  RCC_CR_R &= 0xFEFFFFFF; /*PLL off*/
-  RCC_CR_R |= 0x00000001; /*Turn on HSI*/
+  RCC->CR      |= 0x01U;
+  RCC->APB2ENR |= 0x10U;
 
-  RCC_CFGR_R &= 0xfffffffc; /*After reset switch to HSI*/
-
-  // RCC_APB2RSTR_R |= 0x00000010; /*Reset Clock*/
-  RCC_APB2ENR_R  |= 0x00000010; /*Enable clock GPIOC*/
-  // RCC_APB1ENR_R  |= 0x10000000; /*Enable PWR clock*/
-
-  GPIOC_CRH_R |= 0x00300000; /*Set mode 11 max 50MHz and set cnf 00 push pull*/
-  // GPIOC_BRR_R |= 0x00000000;
-  
-  // GPIOC_ODR_R |= 0xffffffff;
-  
-  // GPIOC_BSRR_R |= 0x00002000; /**/
-  GPIOC_ODR_R |= 0x20000000;
+  GPIOC->CRH |= 0x300000U;
+  GPIOC->ODR |= 0x20000000U;
   
   while (1)
   {
-    // GPIOC_ODR_R |= 0x00000000; /* Output data is 1*/
-    GPIOC_BSRR_R |= 0x00002000;
-    for (int i = 0; i < 1048576; i++){}
+    GPIOC->BSRR |= 0x2000;
+    for (int i = 0; i < 100000; i++){}
     
-    
-    // GPIOC_ODR_R |= 0x20000000; /* Output data is 0*/
-    GPIOC_BSRR_R |= 0x20000000;
-    for (int i = 0; i < 262144; i++){}
-
-    /* code */
+    GPIOC->BSRR |= 0x20000000;
+    for (int i = 0; i < 202144; i++){}
   }
-  
   
 }
