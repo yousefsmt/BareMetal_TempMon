@@ -1,24 +1,36 @@
 #include "stm32f1xx.h"
 
+#define ONE_MSEC_LOAD 0x1f40U
+
 /**
  * @brief Delay Function
- * @param delay_ms::uint32_t the delay time in miliseconds
- * @retval None
+ * @param delay_ms the delay time in miliseconds
+ * @return none
  */
-void
-delay(uint32_t delay_ms)
+void delay(uint32_t delay_ms)
 {
-  uint32_t one_delay = (SystemCoreClock / 1000U) - 0x01U;
 
-  SysTick->CTRL = 0x00U;
-  SysTick->LOAD = one_delay*delay_ms;
-  SysTick->VAL  = 0x00U;
-  SysTick->CTRL = 0x05U;
+  /* Start value then decrement */
+  SysTick->LOAD  = ONE_MSEC_LOAD - 0x01U;
 
-  while ((SysTick->CTRL & 0x10000U) == 0x00U)
+  /* Timer start from LOAD value into below value (VAL register) */
+  SysTick->VAL   = 0x00U;
+
+  /* Processor clock source */
+  SysTick->CTRL |= (0x01U << 0x02U);
+  
+  /* Counter Enable */
+  SysTick->CTRL |= 0x01U;
+
+  for (volatile unsigned int i = 0x00U; i < delay_ms; i++)
   {
-    __NOP();
+    while ((SysTick->CTRL & 0x10000U) == 0x00U)
+    {
+      __NOP();
+    }
   }
+
+  /* Disable SysTick timer*/
   SysTick->CTRL = 0x00U;
 }
 
@@ -35,10 +47,9 @@ int main()
   while (1)
   {
     GPIOC->BSRR |= 0x2000;
-    delay(500U);
+    delay(1000U);
     
     GPIOC->BSRR |= 0x20000000;
-    delay(500U);
-  }
-  
+    delay(1000U);
+  } 
 }
