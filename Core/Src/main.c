@@ -60,13 +60,13 @@
 int
 main()
 {
-  char numStr[16];                // These variables used for numerical output
-  uint16_t count = 0;
+  char numStr[0x10UL];                // These variables used for numerical output
+  uint16_t count = 0x00U;
 
   LCD_init();                     // Initialize the LCD
-  LCD_cmd( LCD_1ST_LINE + 2 );    // Go to the first line of the LCD
-  LCD_puts( "2x8 LCD" );          // Display text
-  LCD_cmd( LCD_2ND_LINE + 1 );    // Go to the 2nd line
+  LCD_cmd( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
+  LCD_puts( "Yousef" );          // Display text
+  LCD_cmd( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
   LCD_puts( "Hello, World!!" );   // Display more text
 
   while( 1 )                                // Continuously count and display number

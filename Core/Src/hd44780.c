@@ -21,40 +21,23 @@
 // #define LCD_2ND_LINE             0xC0 // Go to beginning of 2nd line
 
 
-//  writeLowerNibble
-//  Puts the lower 4 bits of 'data' onto GPIO pins A[11:7]
 void
-LCD_writeLowerNibble( uint8_t data )
+LCD_writeLowerNibble( uint32_t data )
 {
-  GPIOA->ODR &= 0xF0FF;    // Clear GPIO A[11:8]
+  GPIOA->ODR &= 0xF0FFU;    // Clear GPIO A[11:8]
   // Mask off the lower nibble of data, shift 8 bits to the left, and write those bits
   // to the newly cleared nibble from A[11:8]
-  GPIOA->ODR |= (data & 0x0F) << 8;
+  GPIOA->ODR |= (data & 0x0FU) << 0x08;
 }
 
-
-//  writeUpperNibble
-//  Writes the upper 4 bits of 'data' onto GPIO pins A[11:8]
 void
-LCD_writeUpperNibble( uint8_t data )
+LCD_writeUpperNibble( uint32_t data )
 {
-  GPIOA->ODR &= 0xF0FF;    // Clear GPIO A[11:8]
+  GPIOA->ODR &= 0xF0FFU;    // Clear GPIO A[11:8]
   // Mask off the upper nibble of data, shift 4 bits to the left, and write those bits
   // to the newly cleared nibble from A[11:8]
-  GPIOA->ODR |= (data & 0xF0) << 4;
+  GPIOA->ODR |= (data & 0xF0) << 0x04;
 }
-
-
-//  Pause
-//  Actually halts the program here by entering an endless loop
-//  For debugging.
-// void
-// pause( void )
-// {
-//   while(1);
-// }
-
-
 
 //  LCD_pulse_EN
 //  Make EN high, wait for 1 ms, and then bring it down low. This longish timing requirement
@@ -63,7 +46,8 @@ void
 LCD_pulse_EN(void)
 {
   LCD_EN_ON();
-  DelayMicroSecond( 1e3 );
+  DelayMicroSecond( 1000U );
+  // DelayMilliSecond(0x01U);
   LCD_EN_OFF();
 }
 
@@ -71,7 +55,7 @@ LCD_pulse_EN(void)
 //  LCD_cmd
 //  Send a 4-bit command to the LCD
 void
-LCD_cmd( uint8_t data )
+LCD_cmd( uint32_t data )
 {
   // Make sure EN and RS are low
   LCD_EN_OFF();
@@ -86,7 +70,9 @@ LCD_cmd( uint8_t data )
   LCD_pulse_EN();
   DelayMicroSecond( 43 );
   if(( data == CLEAN_DISPLAY ) || ( data == INIT_CURSOR ))
+  {
     DelayMicroSecond( 1487 );
+  }
 }
 
 
@@ -117,23 +103,15 @@ LCD_putc( char data )
 void
 LCD_puts( char *data )
 {
-  uint8_t j=0;
+  uint32_t j = 0x00U;
 
-  while( data[j] != 0 )
+  while( data[j] != 0x00 )
   {
     LCD_putc( data[j] );
     j++;
   }
 }
 
-
-//  LCD_init
-//  Initializes LCD by initializing required GPIO ports and pins used to talk
-//  to the LCD. Also initializes the LCD screen itself to be in 4-bit mode.
-//  This setup uses GPIO A8, A9, A10, A11 for LCD data pins 4, 5, 6, 7 respectively.
-//  GPIO B14 is LCD RS and GPIO B15 is the LCD EN pin.
-//  Note that these GPIO pins are set as floating in order to allow external resistor-
-//  pullups to 5V. This is okay as these are 5V-tolerant pins.
 void
 LCD_init( void )
 {
@@ -168,11 +146,11 @@ LCD_init( void )
   LCD_EN_OFF();
   LCD_RS_OFF();
   // Write 0x02 to data pins to start 4-bit mode
-  LCD_writeLowerNibble( 0x2 );
+  LCD_writeLowerNibble( 0x02 );
   // Pulse EN pin to set this nibble
   LCD_pulse_EN();
 
-  LCD_cmd( LCD_4B_58F_2L );     // 4-bit, 5x8 font, 2 lines
+  LCD_cmd( BUS4_TWO_10DOT );     // 4-bit, 5x8 font, 2 lines
   LCD_cmd( CLEAN_DISPLAY );         // Clear display
   LCD_cmd( ON_DISP_HC_NF );  // Display on, no cursor
 }
