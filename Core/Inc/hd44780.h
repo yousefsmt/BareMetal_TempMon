@@ -3,12 +3,23 @@
 
 #include "handler.h"
 
+#define LCD_CTRL_PORT (GPIOB) /*!< Control connection pins */
+#define LCD_DATA_PORT (GPIOA) /*!< Data connection pins */
+
 #define RW_PIN (0x01U) /*!< Set R/W Pin A0 */
 #define RS_PIN (0x02U) /*!< Set RS Pin A1 */
 #define E_PIN  (0x04U) /*!< Set E Pin A2 */
 
 #define LCD_1ST_LINE (0x80U) /*!< Set beginning of 1st line */ 
 #define LCD_2ND_LINE (0xC0U) /*!< Set beginning of 2st line */
+
+#define LCD_RS_BIT (0x01 << 0x0e) /*!< RS pin connection to PIN14 */ 
+#define LCD_EN_BIT (0x01 << 0x0f) /*!< E pin connection to PIN15 */ 
+
+#define LCD_RS_ON()  (LCD_CTRL_PORT->ODR |=  LCD_RS_BIT) /*!< Enable RS pin */ 
+#define LCD_EN_ON()  (LCD_CTRL_PORT->ODR |=  LCD_EN_BIT) /*!< Enable E pin */ 
+#define LCD_RS_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_RS_BIT) /*!< Disable RS pin */ 
+#define LCD_EN_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_EN_BIT) /*!< Disable E pin */ 
 
 /* Instruction 1 */
 #define CLEAN_DISPLAY (0x01U) /*!< Cleaning display */
@@ -67,7 +78,7 @@
  * an 8‑bit data value into two 4‑bit nibbles and transmitting them
  * sequentially using two enable pulses.
  */
-void LCD_writeLowerNibble(uint32_t data);
+void LCD_WriteLowerNibble(uint32_t data);
 
 /**
  * @brief Write Upper Nibble Bits
@@ -77,7 +88,7 @@ void LCD_writeLowerNibble(uint32_t data);
  * an 8‑bit data value into two 4‑bit nibbles and transmitting them
  * sequentially using two enable pulses.
  */
-void LCD_writeUpperNibble(uint32_t data);
+void LCD_WriteUpperNibble(uint32_t data);
 
 /**
  * @brief Clock Pulse for E pin
@@ -86,7 +97,7 @@ void LCD_writeUpperNibble(uint32_t data);
  * After data is placed on pins D0–D7, this function creates the
  * required enable pulse so the LCD can latch and read the data.
  */
-void LCD_pulse_EN(void);
+void LCD_Enable(void);
 
 /**
  * @brief Execute Command
@@ -96,7 +107,7 @@ void LCD_pulse_EN(void);
  * triggering the corresponding control operation (such as clearing
  * the display, setting cursor position, or configuring display modes).
  */
-void LCD_cmd(uint32_t cmd);
+void LCD_ExecuteCommand(uint32_t cmd);
 
 /**
  * @brief Put one character
@@ -105,7 +116,7 @@ void LCD_cmd(uint32_t cmd);
  * Transmits a given character to the LCD for display at the current
  * cursor position.
  */
-void LCD_putc(char data);
+void LCD_PrintChar(char data);
 
 /**
  * @brief Put character array
@@ -115,7 +126,7 @@ void LCD_putc(char data);
  * string is sent sequentially to the LCD, effectively printing the
  * entire string starting at the current cursor position.
  */
-void LCD_puts(char *data);
+void LCD_PrintString(char *data);
 
 /**
  * @brief Initialize LCD
@@ -126,6 +137,6 @@ void LCD_puts(char *data);
  * the cursor to the home position. This function must be called before
  * any other LCD functions can be used.
  */
-void LCD_init(void);
+void LCD_Init(void);
 
 #endif /* __CORE_HD44780_H */

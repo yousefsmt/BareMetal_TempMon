@@ -39,7 +39,7 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/handler.c \
 Core/Src/hd44780.c \
-Core/Src/srf05.c \
+Core/Src/sht11.c \
 Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c \
 Core/Src/sysmem.c \
 Core/Src/syscalls.c  

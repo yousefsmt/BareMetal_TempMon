@@ -63,22 +63,22 @@ main()
   char numStr[0x10UL];                // These variables used for numerical output
   uint16_t count = 0x00U;
 
-  LCD_init();                     // Initialize the LCD
-  LCD_cmd( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
-  LCD_puts( "Yousef" );          // Display text
-  LCD_cmd( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
-  LCD_puts( "Hello, World!!" );   // Display more text
+  LCD_Init();                     // Initialize the LCD
+  LCD_ExecuteCommand( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
+  LCD_PrintString( "Mina" );          // Display text
+  LCD_ExecuteCommand( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
+  LCD_PrintString( "Hello, World!!" );   // Display more text
 
   while( 1 )                                // Continuously count and display number
   {                                         // from 0 to 9999.
-    LCD_cmd( LCD_1ST_LINE + 11 );           // Go to middle of 1st line
-    LCD_puts( itoa( count, numStr, 10 ));   // Display the count
+    LCD_ExecuteCommand( LCD_1ST_LINE + 11 );           // Go to middle of 1st line
+    LCD_PrintString( itoa( count, numStr, 10 ));   // Display the count
 
     if( ++count > 999 )               // If the count goes over 9999:
     {
       count = 0;                      // Reset the count
-      LCD_cmd( LCD_1ST_LINE + 11 );   // Erase the old count
-      LCD_puts( "    " );
+      LCD_ExecuteCommand( LCD_1ST_LINE + 11 );   // Erase the old count
+      LCD_PrintString( "    " );
     }
   }  
   return 1;

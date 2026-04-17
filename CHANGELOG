@@ -1,0 +1,51 @@
+Change Log for Releases
+=======================
+
+## [v0.1.0] - Initial Release
+
+### Added
+- HD44780-compatible 16×2 LCD driver  
+- Support for 4-bit and 8-bit parallel data modes (D0–D7)  
+- LCD core features:
+  - Initialization sequence based on datasheet timing  
+  - Command and data transmission  
+  - Cursor positioning and display control  
+
+- SHT11 temperature and humidity sensor driver  
+- Custom 2-wire communication protocol implementation (non-I2C)  
+- Support for transmission start sequence and byte-level communication  
+- ACK/NACK handling for reliable data transfer  
+- Measurement capabilities:
+  - Temperature measurement  
+  - Humidity measurement  
+- Support for sensor resolution:
+  - 14-bit (temperature)  
+  - 12-bit (humidity)  
+
+- Precise delay functions using SysTick:
+  - Microsecond delay  
+  - Millisecond delay  
+
+---
+
+### Platform
+- Target MCU: STM32F103C8T6 (ARM Cortex-M3)  
+- System clock: Internal High-Speed Oscillator (HSI)  
+- Software architecture:
+  - CMSIS-based implementation  
+  - Direct register-level programming (no HAL)  
+
+---
+
+### Hardware
+- GPIO Port A and Port B used for:
+  - LCD interface  
+  - SHT11 communication  
+
+---
+
+### Notes
+- Initial functional release  
+- Drivers are implemented using blocking operations  
+- Focus on low-level control and hardware-oriented design  
+- Designed for clarity, portability, and future extension  
