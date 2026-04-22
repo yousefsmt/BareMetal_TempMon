@@ -3,8 +3,8 @@
 
 #include "stm32f1xx.h"
 
-#define ONE_MSEC_LOAD (0x1f40U) /*!< Value for create one millisecond delay for 8MHz clock base */
-#define ONE_USEC_LOAD (0x08U)   /*!< Value for create one microsecond delay for 8MHz clock base */
+#define ONE_MSEC_LOAD (0x1f3fU) /*!< Value for create one millisecond delay for 8MHz clock base */
+#define ONE_USEC_LOAD (0x07U)   /*!< Value for create one microsecond delay for 8MHz clock base */
 
 /**
  * @brief Microsecond-level blocking delay using the SysTick timer

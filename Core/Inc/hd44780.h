@@ -16,10 +16,11 @@
 #define LCD_RS_BIT (0x01 << 0x0e) /*!< RS pin connection to PIN14 */ 
 #define LCD_EN_BIT (0x01 << 0x0f) /*!< E pin connection to PIN15 */ 
 
-#define LCD_RS_ON()  (LCD_CTRL_PORT->ODR |=  LCD_RS_BIT) /*!< Enable RS pin */ 
-#define LCD_EN_ON()  (LCD_CTRL_PORT->ODR |=  LCD_EN_BIT) /*!< Enable E pin */ 
-#define LCD_RS_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_RS_BIT) /*!< Disable RS pin */ 
-#define LCD_EN_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_EN_BIT) /*!< Disable E pin */ 
+#define LCD_RS_ON()  (LCD_CTRL_PORT->ODR |=  LCD_RS_BIT) /*!< Enable RS pin */
+#define LCD_EN_ON()  (LCD_CTRL_PORT->ODR |=  LCD_EN_BIT) /*!< Enable E pin */
+#define LCD_RS_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_RS_BIT) /*!< Disable RS pin */
+#define LCD_EN_OFF() (LCD_CTRL_PORT->ODR &= ~LCD_EN_BIT) /*!< Disable E pin */
+#define CLEAR_DATA() (LCD_DATA_PORT->ODR &= 0xF0FFU)     /*!< Clear Data Pin D4-D7 */
 
 /* Instruction 1 */
 #define CLEAN_DISPLAY (0x01U) /*!< Cleaning display */

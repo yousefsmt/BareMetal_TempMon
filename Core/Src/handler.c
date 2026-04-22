@@ -3,7 +3,7 @@
 void DelayMicroSecond(uint32_t delay_us)
 {
   /* Start value then decrement */
-  SysTick->LOAD = (ONE_USEC_LOAD - 0x01U);
+  SysTick->LOAD = ONE_USEC_LOAD;
 
   /* Timer start from LOAD value into below value (VAL register) */
   SysTick->VAL = RESET;
@@ -29,7 +29,7 @@ void DelayMicroSecond(uint32_t delay_us)
 void DelayMilliSecond(uint32_t delay_ms)
 {
   /* Start value then decrement */
-  SysTick->LOAD = (ONE_MSEC_LOAD - 0x01U);
+  SysTick->LOAD = ONE_MSEC_LOAD;
 
   /* Timer start from LOAD value into below value (VAL register) */
   SysTick->VAL = RESET;

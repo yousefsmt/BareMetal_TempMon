@@ -1,5 +1,8 @@
+#include <stdlib.h>
+
 #include "handler.h"
 #include "hd44780.h"
+#include "sht11.h"
 
 //  main.c for STM32F103-CMSIS-LCD.lib
 //  
@@ -54,32 +57,47 @@
 
 // #include "stm32f103xb.h"                // Primary CMSIS header file
 // #include "STM32F103-CMSIS-LCD-lib.c"    // Contains LCD_ routines
-#include <stdlib.h>                     // Needed for atoi function
+                     // Needed for atoi function
 
 
-int
-main()
+int main()
 {
   char numStr[0x10UL];                // These variables used for numerical output
-  uint16_t count = 0x00U;
-
-  LCD_Init();                     // Initialize the LCD
+  uint32_t ret = 0x00U;
+  // uint16_t count = 0x00U;
+  RCC_Init();
+  LCD_Init();
+  SHT11_Init();
+  SHT11_StartTransmission();
+  SHT11_SendCommand(SHT11_MEASURE_HUMIDITY);
+  ret = SHT11_ReadData();
+  LCD_ExecuteCommand(CLEAN_DISPLAY);
   LCD_ExecuteCommand( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
   LCD_PrintString( "Mina" );          // Display text
   LCD_ExecuteCommand( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
-  LCD_PrintString( "Hello, World!!" );   // Display more text
+  LCD_PrintString( itoa( ret, numStr, 10 ));
+  // LCD_PrintString( "Hello, World!!" );   // Display more text
 
   while( 1 )                                // Continuously count and display number
-  {                                         // from 0 to 9999.
-    LCD_ExecuteCommand( LCD_1ST_LINE + 11 );           // Go to middle of 1st line
-    LCD_PrintString( itoa( count, numStr, 10 ));   // Display the count
+  {
+    SHT11_StartTransmission();
+    SHT11_SendCommand(SHT11_MEASURE_HUMIDITY);
+    ret = SHT11_ReadData();
+    LCD_ExecuteCommand(CLEAN_DISPLAY);
+    LCD_ExecuteCommand( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
+    LCD_PrintString( "Mina" );          // Display text
+    LCD_ExecuteCommand( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
+    LCD_PrintString( itoa( ret, numStr, 10 )); 
+                                           // from 0 to 9999.
+    // LCD_ExecuteCommand( LCD_1ST_LINE + 11 );           // Go to middle of 1st line
+    // LCD_PrintString( itoa( count, numStr, 10 ));   // Display the count
 
-    if( ++count > 999 )               // If the count goes over 9999:
-    {
-      count = 0;                      // Reset the count
-      LCD_ExecuteCommand( LCD_1ST_LINE + 11 );   // Erase the old count
-      LCD_PrintString( "    " );
-    }
+    // if( ++count > 999 )               // If the count goes over 9999:
+    // {
+    //   count = 0;                      // Reset the count
+    //   LCD_ExecuteCommand( LCD_1ST_LINE + 11 );   // Erase the old count
+    //   LCD_PrintString( "    " );
+    // }
   }  
-  return 1;
+  return 0;
 }  
