@@ -28,7 +28,13 @@ The implementation is based entirely on CMSIS, with direct register-level contro
 
 ---
 
-## Project Status
+## Building
 
-This project is currently under active development.  
-The first release version **v0.1.0** is in progress.
+```
+git clone https://github.com/yousefsmt/BareMetal_TempMon
+cd BareMetal_TempMon
+git checkout v0.1.0
+make -j $(nproc)
+```
+
+The firmware can be programmed using external flashing utilities. In this project, the `stm32flash` tool on Ubuntu was used together with a USB-to-Serial adapter to write the binary to the target device.
