@@ -1,103 +1,52 @@
-#include <stdlib.h>
+#include <stdio.h>
 
 #include "handler.h"
 #include "hd44780.h"
 #include "sht11.h"
 
-//  main.c for STM32F103-CMSIS-LCD.lib
-//  
-//  Display text on a 16x2 LCD display using the STM32F103-CMSIS-LCD-lib.c library.
-//      Mike Shegedin, EZdenki.com
-//
-//  Target Microcontroller: STM32F103 (Blue Pill)
-//
-//      Version 1.0   14 Aug 2023   General Cleanup. Changed wiring to be compatible with
-//                                  3.3 V IO pins.
-//      Version 0.9      Jul 2023   Started
-//
-//  HARDWARE SETUP
-//  ==============
-//  The 16x2 LCD module generally requires 5 V power and signals to operate. However,
-//  3.3 V signalling is sufficient to drive the LCD IO pins. That being said, 5V is required
-//  to properly drive the liquid crystal driver circuit.
-//
-//  In order to make protect the microcontroller from the 5 V signals on the LCD IO pins, the
-//  pins that will be connected to the microcontroller should have approx. 10 k ohm dropping
-//  reistors to ground. With that, the microcontroller will drive the pins high with 3.3 V and
-//  when left floating, the pins will be tied to ground.
-//
-//  Note that this procedure is not strictly required on the STM32F103 as the IO pins used are
-//  in fact 5 V tolerant. But this technique is useful when using a microcontroller that only
-//  has 3.3 V IO pins available.
-//
-//     Blue Pill  16x2 LCD  INLINE  5V/GND
-//     =========  ========  ======  ======
-//        GND ----- VSS ------------- GND
-//         5V ----- VDD ------------- 5V
-//                                /-- 5V
-//                   VO -[10k Pot]**     (LCD contrast control)
-//                                \-- GND
-//         B14 ----- RS -- [100K]* -- GND
-//                   RW ------------- GND
-//         B15 ----- EN -- [100K] --- GND
-//                   D0 ------------- GND
-//                   D1 ------------- GND
-//                   D2 ------------- GND
-//                   D3 ------------- GND
-//         A8 ------ D4 -- [100K] --- GND
-//         A9 ------ D5 -- [100K] --- GND
-//        A10 ------ D6 -- [100K] --- GND
-//        A11 ------ D7 -- [100K] --- GND
-//                    A -- [1.0K] --- GND
-//                    K ------------- GND
-//
-// ** Pot may be replaced by a 2k resistor between V0 and GND.
-//         VO -- [ 2k ] --- GND (LCD contrast control)
-
-
-// #include "stm32f103xb.h"                // Primary CMSIS header file
-// #include "STM32F103-CMSIS-LCD-lib.c"    // Contains LCD_ routines
-                     // Needed for atoi function
-
 
 int main()
 {
-  char numStr[0x10UL];                // These variables used for numerical output
-  uint32_t ret = 0x00U;
-  // uint16_t count = 0x00U;
+  uint32_t ret            = 0x00U;
+  char     numStr[0x10UL] = {0x00U};
+
   RCC_Init();
   LCD_Init();
   SHT11_Init();
-  SHT11_StartTransmission();
-  SHT11_SendCommand(SHT11_MEASURE_HUMIDITY);
-  ret = SHT11_ReadData();
-  LCD_ExecuteCommand(CLEAN_DISPLAY);
-  LCD_ExecuteCommand( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
-  LCD_PrintString( "Mina" );          // Display text
-  LCD_ExecuteCommand( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
-  LCD_PrintString( itoa( ret, numStr, 10 ));
-  // LCD_PrintString( "Hello, World!!" );   // Display more text
 
-  while( 1 )                                // Continuously count and display number
+  LCD_ExecuteCommand(CLEAN_DISPLAY);
+
+  LCD_ExecuteCommand(LCD_1ST_LINE + 0x01U);
+  LCD_PrintString("Temp: ");
+
+  LCD_ExecuteCommand(LCD_2ND_LINE + 0x01U);
+  LCD_PrintString("Humidity: ");
+
+  if (ret == 0xFFFF)
   {
-    SHT11_StartTransmission();
+    LCD_PrintString("SHT11 ERR");
+  }
+  else
+  {
+    sprintf(numStr, "%lu", ret);
+    LCD_PrintString(numStr);
+  }
+  while (1)
+  {
     SHT11_SendCommand(SHT11_MEASURE_HUMIDITY);
     ret = SHT11_ReadData();
-    LCD_ExecuteCommand(CLEAN_DISPLAY);
-    LCD_ExecuteCommand( LCD_1ST_LINE + 0x02U );    // Go to the first line of the LCD
-    LCD_PrintString( "Mina" );          // Display text
-    LCD_ExecuteCommand( LCD_2ND_LINE + 0x01U );    // Go to the 2nd line
-    LCD_PrintString( itoa( ret, numStr, 10 )); 
-                                           // from 0 to 9999.
-    // LCD_ExecuteCommand( LCD_1ST_LINE + 11 );           // Go to middle of 1st line
-    // LCD_PrintString( itoa( count, numStr, 10 ));   // Display the count
-
-    // if( ++count > 999 )               // If the count goes over 9999:
-    // {
-    //   count = 0;                      // Reset the count
-    //   LCD_ExecuteCommand( LCD_1ST_LINE + 11 );   // Erase the old count
-    //   LCD_PrintString( "    " );
-    // }
-  }  
+    if (ret == 0xffffU)
+    {
+      LCD_ExecuteCommand(CLEAN_DISPLAY);
+      LCD_PrintString("SHT11 ERR");
+    }
+    else
+    {
+      sprintf(numStr, "%lu", ret);
+      LCD_ExecuteCommand(LCD_1ST_LINE + 8);
+      LCD_PrintString(numStr);
+    }
+  }
+  
   return 0;
-}  
+}

@@ -75,6 +75,7 @@
  * @brief Write Lower Nibble Bits
  * @param data set data for lower nibble port
  * @return none
+ * 
  * This function operates the LCD in 4‑bit interface mode by splitting
  * an 8‑bit data value into two 4‑bit nibbles and transmitting them
  * sequentially using two enable pulses.
@@ -85,6 +86,7 @@ void LCD_WriteLowerNibble(uint32_t data);
  * @brief Write Upper Nibble Bits
  * @param data set data for upper nibble port
  * @return none
+ * 
  * This function operates the LCD in 4‑bit interface mode by splitting
  * an 8‑bit data value into two 4‑bit nibbles and transmitting them
  * sequentially using two enable pulses.
@@ -95,6 +97,7 @@ void LCD_WriteUpperNibble(uint32_t data);
  * @brief Clock Pulse for E pin
  * @param none
  * @return none
+ * 
  * After data is placed on pins D0–D7, this function creates the
  * required enable pulse so the LCD can latch and read the data.
  */
@@ -104,6 +107,7 @@ void LCD_Enable(void);
  * @brief Execute Command
  * @param cmd Specific command
  * @return none
+ * 
  * This function transmits a specific command code to the LCD module,
  * triggering the corresponding control operation (such as clearing
  * the display, setting cursor position, or configuring display modes).
@@ -114,6 +118,7 @@ void LCD_ExecuteCommand(uint32_t cmd);
  * @brief Put one character
  * @param data Specific character
  * @return none
+ * 
  * Transmits a given character to the LCD for display at the current
  * cursor position.
  */
@@ -123,6 +128,7 @@ void LCD_PrintChar(char data);
  * @brief Put character array
  * @param data Specific character array
  * @return none
+ * 
  * Transmits a null-terminated string to the LCD. Each character in the
  * string is sent sequentially to the LCD, effectively printing the
  * entire string starting at the current cursor position.
@@ -133,6 +139,7 @@ void LCD_PrintString(char *data);
  * @brief Initialize LCD
  * @param none
  * @return none
+ * 
  * Configures and sets up the LCD controller for operation. This typically
  * involves setting display parameters, clearing the screen, and positioning
  * the cursor to the home position. This function must be called before
