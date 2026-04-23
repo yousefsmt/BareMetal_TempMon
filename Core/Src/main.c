@@ -1,37 +1,52 @@
-#include "main.h"
+#include <stdio.h>
+
+#include "handler.h"
+#include "hd44780.h"
+#include "sht11.h"
+
 
 int main()
 {
-  RCC_CR_R &= 0xFEFFFFFF; /*PLL off*/
-  RCC_CR_R |= 0x00000001; /*Turn on HSI*/
+  uint32_t ret            = 0x00U;
+  char     numStr[0x10UL] = {0x00U};
 
-  RCC_CFGR_R &= 0xfffffffc; /*After reset switch to HSI*/
+  RCC_Init();
+  LCD_Init();
+  SHT11_Init();
 
-  // RCC_APB2RSTR_R |= 0x00000010; /*Reset Clock*/
-  RCC_APB2ENR_R  |= 0x00000010; /*Enable clock GPIOC*/
-  // RCC_APB1ENR_R  |= 0x10000000; /*Enable PWR clock*/
+  LCD_ExecuteCommand(CLEAN_DISPLAY);
 
-  GPIOC_CRH_R |= 0x00300000; /*Set mode 11 max 50MHz and set cnf 00 push pull*/
-  // GPIOC_BRR_R |= 0x00000000;
-  
-  // GPIOC_ODR_R |= 0xffffffff;
-  
-  // GPIOC_BSRR_R |= 0x00002000; /**/
-  GPIOC_ODR_R |= 0x20000000;
-  
+  LCD_ExecuteCommand(LCD_1ST_LINE + 0x01U);
+  LCD_PrintString("Temp: ");
+
+  LCD_ExecuteCommand(LCD_2ND_LINE + 0x01U);
+  LCD_PrintString("Humidity: ");
+
+  if (ret == 0xFFFF)
+  {
+    LCD_PrintString("SHT11 ERR");
+  }
+  else
+  {
+    sprintf(numStr, "%lu", ret);
+    LCD_PrintString(numStr);
+  }
   while (1)
   {
-    // GPIOC_ODR_R |= 0x00000000; /* Output data is 1*/
-    GPIOC_BSRR_R |= 0x00002000;
-    for (int i = 0; i < 1048576; i++){}
-    
-    
-    // GPIOC_ODR_R |= 0x20000000; /* Output data is 0*/
-    GPIOC_BSRR_R |= 0x20000000;
-    for (int i = 0; i < 262144; i++){}
-
-    /* code */
+    SHT11_SendCommand(SHT11_MEASURE_HUMIDITY);
+    ret = SHT11_ReadData();
+    if (ret == 0xffffU)
+    {
+      LCD_ExecuteCommand(CLEAN_DISPLAY);
+      LCD_PrintString("SHT11 ERR");
+    }
+    else
+    {
+      sprintf(numStr, "%lu", ret);
+      LCD_ExecuteCommand(LCD_1ST_LINE + 8);
+      LCD_PrintString(numStr);
+    }
   }
   
-  
+  return 0;
 }

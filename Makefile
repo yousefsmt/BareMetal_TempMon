@@ -37,6 +37,9 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/handler.c \
+Core/Src/hd44780.c \
+Core/Src/sht11.c \
 Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c \
 Core/Src/sysmem.c \
 Core/Src/syscalls.c  
@@ -107,9 +110,9 @@ C_INCLUDES =  \
 
 
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wpedantic -Wextra -Wuninitialized -Wshadow -Wfloat-equal -Wlogical-op -Wnull-dereference -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wpedantic -Wextra -Wuninitialized -Wshadow -Wfloat-equal -Wlogical-op -Wnull-dereference -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
@@ -124,7 +127,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F103XX_FLASH.ld
+LDSCRIPT = Startup/STM32F103XX_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
